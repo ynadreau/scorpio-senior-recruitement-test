@@ -21,6 +21,9 @@ java-recruitment-test/target/
 /nbproject/private/
 /nbbuild/
 
+### VSCode ###
+.vscode/
+
 ### dépendance ###
 /typescript-recruitment-test/node_modules
 /typescript-recruitment-test/dist
