@@ -24,19 +24,22 @@ public enum DataType {
      * Convert a string to a DataType.
      * Accepts either the enum name (case-insensitive) or the JSON value (case-insensitive),
      * e.g. "SHORT", "short", "Short".
-     * Returns null if no matching DataType is found.
+     * 
+     * @param type type to convert
+     * @return the found data type, null otherwise
      */
-    public static DataType fromString(String val) {
-        if (val == null) return null;
-        val = val.trim();
-        for (DataType dataType : DataType.values()) {
-            if (dataType.name().equalsIgnoreCase(val) || dataType.getValue().equalsIgnoreCase(val)) {
-                return dataType;
+    public static DataType fromString(String type) {
+        if (type != null) {
+            type = type.trim();
+            for (DataType dataType : DataType.values()) {
+                if (dataType.name().equalsIgnoreCase(type) || dataType.getValue().equalsIgnoreCase(type)) {
+                    return dataType;
+                }
             }
         }
         return null;
     }
-    
+
     @JsonValue
     private final String value;
 

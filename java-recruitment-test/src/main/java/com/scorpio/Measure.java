@@ -14,6 +14,7 @@ public class Measure {
 
     /**
      * Checks if the measure name contains the given word (case insensitive).
+     * 
      * @param word The word to search for
      * @return true if the measure name contains the word, false otherwise
      */
