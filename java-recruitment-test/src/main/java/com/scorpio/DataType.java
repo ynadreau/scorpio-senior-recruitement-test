@@ -20,6 +20,23 @@ public enum DataType {
 
     STRING("String", String.class);
 
+    /**
+     * Convert a string to a DataType.
+     * Accepts either the enum name (case-insensitive) or the JSON value (case-insensitive),
+     * e.g. "SHORT", "short", "Short".
+     * Returns null if no matching DataType is found.
+     */
+    public static DataType fromString(String val) {
+        if (val == null) return null;
+        val = val.trim();
+        for (DataType dataType : DataType.values()) {
+            if (dataType.name().equalsIgnoreCase(val) || dataType.getValue().equalsIgnoreCase(val)) {
+                return dataType;
+            }
+        }
+        return null;
+    }
+    
     @JsonValue
     private final String value;
 

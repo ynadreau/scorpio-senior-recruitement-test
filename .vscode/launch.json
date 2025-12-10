@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Plc (with arg)",
+      "request": "launch",
+      "mainClass": "com.scorpio.Plc",
+      "projectName": "java-recruitment-test",
+      "args": "type",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/java-recruitment-test"
+    }
+  ]
+}
