@@ -28,7 +28,7 @@ public class Category {
      * @param name name to search
      * @return list of paths of matching measures
      */
-    public List<String> findMeasuresByName(String name) {
+    public List<String> findMeasuresByName(String name) throws IllegalArgumentException {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name is not defined");
         }
@@ -86,12 +86,12 @@ public class Category {
      * @param id id to search
      * @return list of paths of matching measures
      */
-    public List<String> findMeasuresById(String id) {
+    public List<String> findMeasuresById(String id) throws IllegalArgumentException {
         if (id == null) {
             throw new IllegalArgumentException("Id is not defined");
         }
         try {
-            Long identifier = Long.getLong(id);
+            Long identifier = Long.valueOf(id);
             return findMeasuresById(identifier, null);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid id: " + id);
