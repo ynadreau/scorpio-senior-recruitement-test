@@ -27,6 +27,7 @@ public class Category {
      *
      * @param name name to search
      * @return list of paths of matching measures
+     * @throws IllegalArgumentException
      */
     public List<String> findMeasuresByName(String name) throws IllegalArgumentException {
         if (name == null || name.isEmpty()) {
@@ -37,15 +38,11 @@ public class Category {
 
     /**
      * Searches recursively for measures whose name contains the given word (case insensitive).
-     *
-     * @param word word to search
-     * @param path parent category path
-     * @return list of paths of matching measures
      */
     private List<String> findMeasuresByName(String word, Deque<String> path) {
         List<String> results = new ArrayList<>();
 
-        // get current category path
+        // get current category path from parent path
         path = this.getCurrentPath(path);
 
         // search the word in this category's measures
@@ -85,6 +82,7 @@ public class Category {
      *
      * @param id id to search
      * @return list of paths of matching measures
+     * @throws IllegalArgumentException
      */
     public List<String> findMeasuresById(String id) throws IllegalArgumentException {
         if (id == null) {
@@ -100,15 +98,11 @@ public class Category {
 
     /**
      * Searches recursively for measures whose id equals to the given id.
-     *
-     * @param id id to search
-     * @param path parent category path
-     * @return list of paths of matching measures
      */
     private List<String> findMeasuresById(Long id, Deque<String> path) {
         List<String> results = new ArrayList<>();
 
-        // get current category path
+        // get current category path from parent path
         path = this.getCurrentPath(path);
 
         // search the word in this category's measures
@@ -148,7 +142,7 @@ public class Category {
      *
      * @param type type to search
      * @return list of paths of matching measures
-     * @throws IllegalArgumentException if the type is invalid
+     * @throws IllegalArgumentException
      */
     public List<String> findMeasuresByType(String type) throws IllegalArgumentException {
         if (type == null || type.isBlank()) {
@@ -163,15 +157,11 @@ public class Category {
 
     /**
      * Searches recursively for measures whose type equals to the given type.
-     *
-     * @param type type to search
-     * @param path parent category path
-     * @return list of paths of matching measures
      */
     private List<String> findMeasuresByType(DataType type, Deque<String> path) {
         List<String> results = new ArrayList<>();
 
-        // get current category path
+        // get current category path from parent path
         path = this.getCurrentPath(path);
 
         // search the word in this category's measures
@@ -206,8 +196,6 @@ public class Category {
 
     /**
      * Gets the current category path from the parent path.
-     * @param path The parent category path
-     * @return the current category path
      */
     private Deque<String> getCurrentPath(Deque<String> path) {
         if (path == null) path = new LinkedList<>();
