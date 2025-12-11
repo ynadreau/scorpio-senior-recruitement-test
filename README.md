@@ -50,21 +50,6 @@ Root Category
 - **Command-line Mode**: Direct search with arguments
 - **Interactive Mode**: User-friendly prompts with continuous search sessions
 
-**Type-Safe Implementation**
-- Enum-based search type management
-- Strong typing with Java records and enums
-- Lombok annotations for cleaner code
-
-**Comprehensive Testing**
-- Unit tests for all core functionality
-- Test coverage for edge cases and error scenarios
-- JUnit 5 + Lombok integration
-
-**Enterprise-Ready**
-- Structured logging with SLF4J
-- Proper exception handling
-- Clean, maintainable code architecture
-
 ## Usage
 
 ### Command-Line Mode
@@ -120,7 +105,7 @@ Measures found by 'name' matching 'heating':
 (2 results)
 ```
 
-## Development & Testing
+## Testing
 
 ### Running Tests
 
@@ -137,39 +122,13 @@ mvn -f java-recruitment-test test jacoco:report
 
 ### Test Suites
 
-| Test Class | Tests | Coverage |
-|---|---|---|
-| `CategoryTest` | 13 | Search logic, path building, recursion |
-| `MeasureTest` | 20 | Matching logic, case-sensitivity, edge cases |
-| `DataTypeTest` | 17 | Enum conversion, validation, edge cases |
+| Test Class | Coverage |
+|---|---|
+| `CategoryTest` | Search logic, path building, recursion |
+| `MeasureTest` | Matching logic, case-sensitivity, edge cases |
+| `DataTypeTest` | Enum conversion, validation, edge cases |
 
-## 📝 Data File Format
-
-`bacnetPlcTree.json` structure:
-
-```json
-{
-  "id": 1,
-  "name": "Root",
-  "categories": [
-    {
-      "id": 2,
-      "name": "Building A",
-      "categories": [...],
-      "measures": [
-        {
-          "id": 1001,
-          "name": "Temperature Sensor",
-          "dataType": "FLOAT"
-        }
-      ]
-    }
-  ],
-  "measures": [...]
-}
-```
-
-## 🔧 Configuration
+## Configuration
 
 ### Logging (`log4j.properties`)
 
@@ -186,7 +145,7 @@ Key configurations:
 - **Dependencies**: Lombok, Jackson, SLF4J, JUnit 5
 - **Annotation Processing**: Enabled for Lombok
 
-## 📚 Documentation
+## Documentation
 
 Full Javadoc comments are included throughout the codebase:
 
