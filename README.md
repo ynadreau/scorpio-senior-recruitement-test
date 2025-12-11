@@ -2,15 +2,15 @@
 
 > A comprehensive Java application for searching and managing hierarchical PLC (Programmable Logic Controller) measure data from BACnet automation systems.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
 - [Usage](#usage)
-- [Development](#development)
 - [Testing](#testing)
+- [Documentation](#documentation)
 
-## 🎯 Overview
+## Overview
 
 The SCORPIO PLC Measure Search Tool is a Java application designed to load, parse, and efficiently search hierarchical measurement data from BACnet automation systems. The tool supports searching measures by name, ID, and DataType with full path tracking.
 
@@ -127,23 +127,6 @@ mvn -f java-recruitment-test test jacoco:report
 | `CategoryTest` | Search logic, path building, recursion |
 | `MeasureTest` | Matching logic, case-sensitivity, edge cases |
 | `DataTypeTest` | Enum conversion, validation, edge cases |
-
-## Configuration
-
-### Logging (`log4j.properties`)
-
-Customize logging output:
-```properties
-log4j.rootLogger=INFO, console
-log4j.logger.com.scorpio=DEBUG
-```
-
-### Maven (`pom.xml`)
-
-Key configurations:
-- **Source/Target**: Java 21
-- **Dependencies**: Lombok, Jackson, SLF4J, JUnit 5
-- **Annotation Processing**: Enabled for Lombok
 
 ## Documentation
 
