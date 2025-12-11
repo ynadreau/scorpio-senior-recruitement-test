@@ -49,6 +49,7 @@ public class Plc {
 
     // ==================== Main Entry Point ====================
     public static void main(String[] args) throws IOException {
+        // Load PLC category tree from JSON resource
         ObjectMapper mapper = new ObjectMapper();
         try (InputStream stream = Plc.class.getResourceAsStream(RESOURCE_PATH)) {
             if (stream == null) {
@@ -58,9 +59,9 @@ public class Plc {
 
             // Define mode: command-line or interactive
             if (args != null && args.length >= 2) {
-                processCommandLineSearch(root, args[0], args[1]);
+                commandLineSearch(root, args[0], args[1]);
             } else {
-                processInteractiveSearch(root);
+                interactiveSearch(root);
             }
 
         } catch (Exception e) {
@@ -72,7 +73,7 @@ public class Plc {
     /**
      * Command-line mode: process search from command-line arguments.
      */
-    private static void processCommandLineSearch(Category root, String searchTypeStr, String searchParam) {
+    private static void commandLineSearch(Category root, String searchTypeStr, String searchParam) {
         SearchType searchType = SearchType.fromString(searchTypeStr);
         if (searchType == null) {
             System.out.println(String.format(INVALID_SEARCH_TYPE_MESSAGE, SearchType.getSupportedTypes()));
@@ -85,7 +86,7 @@ public class Plc {
     /**
      * Interactive mode: repeatedly prompt user for search type and criteria.
      */
-    private static void processInteractiveSearch(Category root) {
+    private static void interactiveSearch(Category root) {
         Scanner scanner = new Scanner(System.in);
         System.out.println(INTERACTIVE_MODE_USAGE);
         try {
