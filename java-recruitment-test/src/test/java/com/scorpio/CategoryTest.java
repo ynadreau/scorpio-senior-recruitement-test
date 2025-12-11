@@ -27,7 +27,7 @@ public class CategoryTest {
     }
 
     @Test 
-    void findMeasuresByName_childrenAndCaseInsensitive() {
+    void findMeasuresByName_multipleChildren() {
         Category root = new Category();
         root.setId(1);
         root.setName("Root");
@@ -59,7 +59,7 @@ public class CategoryTest {
     }
 
     @Test
-    void findMeasuresByName_emptyWord_returnsEmpty() {
+    void findMeasuresByName_notfound() {
         Category root = new Category();
         root.setId(1);
         root.setName("Root");
@@ -215,7 +215,7 @@ public class CategoryTest {
     }
 
     @Test
-    void findMeasuresByType_multipleChildrenDifferentTypes() {
+    void findMeasuresByType_multipleChildren() {
         Category root = new Category();
         root.setId(1);
         root.setName("Root");
