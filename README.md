@@ -63,7 +63,7 @@ java -cp "java-recruitment-test/target/classes:java-recruitment-test/target/depe
 # Search by measure ID (exact match)
 java -cp "java-recruitment-test/target/classes:java-recruitment-test/target/dependency/*" com.scorpio.Plc id 1001
 
-# Search by DataType (FLOAT, INTEGER, BOOLEAN, etc.)
+# Search by DataType (FLOAT, INTEGER, BOOLEAN, ...)
 java -cp "java-recruitment-test/target/classes:java-recruitment-test/target/dependency/*" com.scorpio.Plc type FLOAT
 ```
 
@@ -93,13 +93,13 @@ java -cp "java-recruitment-test/target/classes:java-recruitment-test/target/depe
 ║  Supported Search Types:                                   ║
 ║    • name  - Search by measure name (contains)             ║
 ║    • id    - Search by measure ID (exact match)            ║
-║    • type  - Search by DataType (FLOAT, INTEGER, etc.)     ║
+║    • type  - Search by DataType (FLOAT, INTEGER, ...)      ║
 ╚════════════════════════════════════════════════════════════╝
 
-Enter search type (name|id|type) or 'quit' to exit: name
+Enter search type (name|id|type) or 'quit' (q) to exit: name
 Enter search criteria: heating
 
-Measures found by 'name' matching 'heating':
+Measures found by name matching 'heating':
   [1] Root/Building A/Floor 1/Heating Sensor
   [2] Root/Building B/Floor 2/Heating Control
 (2 results)
@@ -135,7 +135,4 @@ Full Javadoc comments are included throughout the codebase:
 ```bash
 # Generate Javadoc
 mvn -f java-recruitment-test javadoc:javadoc
-
-# View generated docs
-open target/site/apidocs/index.html
 ```
