@@ -8,6 +8,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Category class representing a category that can contain sub-categories and measures.
+ */
 @Getter
 @Setter
 public class Category {
@@ -19,6 +22,14 @@ public class Category {
 
     private List<Measure> measures;
 
+    public Category() {
+    }
+
+    public Category(long id, String name) {
+        this();
+        this.id = id;
+        this.name = name;
+    }
     /**
      * Searches recursively for measures whose name contains the given word (case insensitive).
      * Returns a list of full paths where each path is composed of categories
@@ -150,7 +161,7 @@ public class Category {
         }
         DataType dt = DataType.fromString(type);
         if (dt == null) {
-            throw new IllegalArgumentException("Invalid data type: " + type);
+            throw new IllegalArgumentException("Unsupported data type: " + type);
         }
         return findMeasuresByType(dt, null);
     }

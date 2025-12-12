@@ -60,12 +60,6 @@ import lombok.Getter;
     private final String value;
     private final String description;
 
-    /**
-     * Constructor
-     *
-     * @param value the string representation of this search type
-     * @param description a human-readable description of this search type
-     */
     SearchType(String value, String description) {
         this.value = value;
         this.description = description;

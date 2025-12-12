@@ -10,14 +10,8 @@ public class CategoryTest {
 
     @Test
     void findMeasuresByName_simpleMatch() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m = new Measure();
-        m.setId(10);
-        m.setName("Heating Temp");
-
+        Category root = new Category(1, "Root");
+        Measure m = new Measure(10, "Heating Temp", DataType.FLOAT);
         root.setMeasures(List.of(m));
 
         List<String> results = root.findMeasuresByName("heating");
@@ -28,26 +22,13 @@ public class CategoryTest {
 
     @Test 
     void findMeasuresByName_multipleChildren() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Category floor1 = new Category();
-        floor1.setId(2);
-        floor1.setName("Floor1");
-        Measure m1 = new Measure();
-        m1.setId(11);
-        m1.setName("Room Heating");
+        Category root = new Category(1, "Root");
+        Category floor1 = new Category(2, "Floor1");
+        Measure m1 = new Measure(11, "Room Heating", DataType.FLOAT);
         floor1.setMeasures(List.of(m1));
-
-        Category floor2 = new Category();
-        floor2.setId(3);
-        floor2.setName("Floor2");
-        Measure m2 = new Measure();
-        m2.setId(12);
-        m2.setName("room heating sensor");
+        Category floor2 = new Category(3, "Floor2");
+        Measure m2 = new Measure(12, "room heating sensor", DataType.FLOAT);
         floor2.setMeasures(List.of(m2));
-
         root.setCategories(List.of(floor1, floor2));
 
         List<String> results = root.findMeasuresByName("HEATing");
@@ -60,9 +41,7 @@ public class CategoryTest {
 
     @Test
     void findMeasuresByName_notfound() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
+        Category root = new Category(1, "Root");
 
         List<String> results = root.findMeasuresByName("NameNotFound");
         assertNotNull(results);
@@ -70,15 +49,17 @@ public class CategoryTest {
     }
 
     @Test
+    void findMeasuresByName_throwsException() {
+        Category root = new Category(1, "Root");
+
+        assertThrows(IllegalArgumentException.class, () -> root.findMeasuresByName(null));
+    }
+
+    @Test
     void findMeasuresById_simpleMatch() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m = new Measure();
-        m.setId(10);
+        Category root = new Category(1, "Root");
+        Measure m = new Measure(10, "Temperature Sensor", DataType.FLOAT);
         m.setName("Temperature Sensor");
-
         root.setMeasures(List.of(m));
 
         List<String> results = root.findMeasuresById("10");
@@ -89,26 +70,13 @@ public class CategoryTest {
 
     @Test
     void findMeasuresById_multipleChildren() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Category cat1 = new Category();
-        cat1.setId(2);
-        cat1.setName("Building A");
-        Measure m1 = new Measure();
-        m1.setId(100);
-        m1.setName("Temp A");
+        Category root = new Category(1, "Root");
+        Category cat1 = new Category(2, "Building A");
+        Measure m1 = new Measure(100, "Temp A", DataType.FLOAT);
         cat1.setMeasures(List.of(m1));
-
-        Category cat2 = new Category();
-        cat2.setId(3);
-        cat2.setName("Building B");
-        Measure m2 = new Measure();
-        m2.setId(100);
-        m2.setName("Temp B");
+        Category cat2 = new Category(3, "Building B");
+        Measure m2 = new Measure(100, "Temp B", DataType.FLOAT);
         cat2.setMeasures(List.of(m2));
-
         root.setCategories(List.of(cat1, cat2));
 
         List<String> results = root.findMeasuresById("100");
@@ -120,13 +88,8 @@ public class CategoryTest {
 
     @Test
     void findMeasuresById_notFound() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m = new Measure();
-        m.setId(10);
-        m.setName("Sensor");
+        Category root = new Category(1, "Root");
+        Measure m = new Measure(10, "Sensor", DataType.SHORT);
         root.setMeasures(List.of(m));
 
         List<String> results = root.findMeasuresById("999");
@@ -135,34 +98,17 @@ public class CategoryTest {
     }
 
     @Test
-    void findMeasuresById_nullId_throwsException() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
+    void findMeasuresById_throwsException() {
+        Category root = new Category(1, "Root");
 
         assertThrows(IllegalArgumentException.class, () -> root.findMeasuresById(null));
-    }
-
-    @Test
-    void findMeasuresById_invalidIdFormat_throwsException() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
         assertThrows(IllegalArgumentException.class, () -> root.findMeasuresById("not_a_number"));
     }
 
     @Test
     void findMeasuresByType_simpleMatch() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m = new Measure();
-        m.setId(10);
-        m.setName("Pressure Reading");
-        m.setDataType(DataType.FLOAT);
-
+        Category root = new Category(1, "Root");
+        Measure m = new Measure(10, "Pressure Reading", DataType.FLOAT);
         root.setMeasures(List.of(m));
 
         List<String> results = root.findMeasuresByType("FLOAT");
@@ -173,20 +119,9 @@ public class CategoryTest {
 
     @Test
     void findMeasuresByType_caseInsensitive() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m1 = new Measure();
-        m1.setId(10);
-        m1.setName("Count");
-        m1.setDataType(DataType.INTEGER);
-        
-        Measure m2 = new Measure();
-        m2.setId(11);
-        m2.setName("Value");
-        m2.setDataType(DataType.INTEGER);
-
+        Category root = new Category(1, "Root");
+        Measure m1 = new Measure(10, "Count", DataType.INTEGER);
+        Measure m2 = new Measure(11, "Value", DataType.INTEGER);
         root.setMeasures(List.of(m1, m2));
 
         // Test various cases
@@ -200,58 +135,27 @@ public class CategoryTest {
     }
 
     @Test
-    void findMeasuresByType_unknownType_throwsException() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Measure m = new Measure();
-        m.setId(10);
-        m.setName("Sensor");
-        m.setDataType(DataType.SHORT);
+    void findMeasuresByType_throwsException() {
+        Category root = new Category(1, "Root");
+        Measure m = new Measure(10, "Sensor", DataType.SHORT);
         root.setMeasures(List.of(m));
 
+        assertThrows(IllegalArgumentException.class, () -> root.findMeasuresByType(null));
+        assertThrows(IllegalArgumentException.class, () -> root.findMeasuresByType(""));
         assertThrows(IllegalArgumentException.class, () -> root.findMeasuresByType("unknown_type"));
     }
 
     @Test
     void findMeasuresByType_multipleChildren() {
-        Category root = new Category();
-        root.setId(1);
-        root.setName("Root");
-
-        Category sensors = new Category();
-        sensors.setId(2);
-        sensors.setName("Sensors");
-        
-        Measure temp = new Measure();
-        temp.setId(10);
-        temp.setName("Temperature");
-        temp.setDataType(DataType.FLOAT);
-        
-        Measure pressure = new Measure();
-        pressure.setId(11);
-        pressure.setName("Pressure");
-        pressure.setDataType(DataType.DOUBLE);
-        
+        Category root = new Category(1, "Root");
+        Category sensors = new Category(2, "Sensors");
+        Measure temp = new Measure(10, "Temperature", DataType.FLOAT);
+        Measure pressure = new Measure(11, "Pressure", DataType.DOUBLE);
         sensors.setMeasures(List.of(temp, pressure));
-
-        Category switches = new Category();
-        switches.setId(3);
-        switches.setName("Switches");
-        
-        Measure alarm = new Measure();
-        alarm.setId(12);
-        alarm.setName("Alarm");
-        alarm.setDataType(DataType.BOOLEAN);
-        
-        Measure counter = new Measure();
-        counter.setId(13);
-        counter.setName("Counter");
-        counter.setDataType(DataType.LONG);
-        
+        Category switches = new Category(3, "Switches");
+        Measure alarm = new Measure(13, "Alarm", DataType.BOOLEAN);
+        Measure counter = new Measure(14, "Counter", DataType.LONG);
         switches.setMeasures(List.of(alarm, counter));
-
         root.setCategories(List.of(sensors, switches));
 
         // Search for FLOAT type

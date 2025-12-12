@@ -3,6 +3,9 @@ package com.scorpio;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+/**
+ * Enumeration of supported data types.
+ */
 @Getter
 public enum DataType {
 

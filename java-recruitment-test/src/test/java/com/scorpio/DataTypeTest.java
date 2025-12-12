@@ -9,21 +9,18 @@ public class DataTypeTest {
     @Test
     void fromString_upperCase() {
         DataType result = DataType.fromString("SHORT");
-        assertNotNull(result);
         assertEquals(DataType.SHORT, result);
     }
 
     @Test
     void fromString_lowerCase() {
         DataType result = DataType.fromString("short");
-        assertNotNull(result);
         assertEquals(DataType.SHORT, result);
     }
 
     @Test
     void fromString_mixedCase() {
         DataType result = DataType.fromString("Short");
-        assertNotNull(result);
         assertEquals(DataType.SHORT, result);
     }
 
