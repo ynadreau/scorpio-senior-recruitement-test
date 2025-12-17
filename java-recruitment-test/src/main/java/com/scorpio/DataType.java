@@ -52,4 +52,14 @@ public enum DataType {
         this.value = value;
         this.clazz = clazz;
     }
+
+    /**
+     * Returns a predicate that tests if a DataType matches the given string.
+     * @param typeStr the string to match against
+     * @return a predicate for DataType matching, or always false if typeStr is invalid
+     */
+    public static java.util.function.Predicate<DataType> matches(String typeStr) {
+        DataType target = fromString(typeStr);
+        return dt -> target != null && dt == target;
+    }
 }

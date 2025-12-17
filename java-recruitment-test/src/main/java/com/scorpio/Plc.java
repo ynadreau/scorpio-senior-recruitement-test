@@ -160,6 +160,7 @@ public class Plc {
      * Perform search based on type and parameter.
      */
     private static List<String> performSearch(Category root, SearchType searchType, String searchParam) throws IllegalArgumentException {
+        
         return switch (searchType) {
             case NAME -> root.findMeasuresByName(searchParam);
             case ID -> root.findMeasuresById(searchParam);

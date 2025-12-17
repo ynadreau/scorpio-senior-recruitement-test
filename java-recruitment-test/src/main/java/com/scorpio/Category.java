@@ -3,16 +3,29 @@ package com.scorpio;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Category class representing a category that can contain sub-categories and measures.
  */
 @Getter
 @Setter
+@JsonDeserialize(using = Category.CategoryDeserializer.class)
 public class Category {
     private long id;
 
@@ -21,6 +34,9 @@ public class Category {
     private List<Category> categories;
 
     private List<Measure> measures;
+
+    @JsonIgnore
+    private Category parent;
 
     public Category() {
     }
@@ -44,46 +60,7 @@ public class Category {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name is not defined");
         }
-        return findMeasuresByName(name.toLowerCase(), null);
-    }
-
-    /**
-     * Searches recursively for measures whose name contains the given word (case insensitive).
-     */
-    private List<String> findMeasuresByName(String word, Deque<String> path) {
-        List<String> results = new ArrayList<>();
-
-        // get current category path from parent path
-        path = this.getCurrentPath(path);
-
-        // search the word in this category's measures
-        List<Measure> measures = this.getMeasures();
-        if (measures != null) {
-            for (Measure m : measures) {
-                if (m.isMatchingName(word)) {
-                    List<String> parts = new ArrayList<>(path);
-                    parts.add(m.getName());
-                    results.add(String.join("/", parts));
-                }
-            }
-        }
-
-        // search the word in child categories
-        List<Category> children = this.getCategories();
-        if (children != null) {
-            for (Category child : children) {
-                if (child == null) continue;
-                List<String> childResults = child.findMeasuresByName(word, path);
-                if (childResults != null && !childResults.isEmpty()) {
-                    results.addAll(childResults);
-                }
-            }
-        }
-        
-        // backtrack to the parent path
-        path.removeLast();
-
-        return results;
+        return findMeasuresRecursive(Measure.nameContains(name));
     }
 
     /**
@@ -99,51 +76,7 @@ public class Category {
         if (id == null) {
             throw new IllegalArgumentException("Id is not defined");
         }
-        try {
-            Long identifier = Long.valueOf(id);
-            return findMeasuresById(identifier, null);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid id: " + id);
-        }
-    }
-
-    /**
-     * Searches recursively for measures whose id equals to the given id.
-     */
-    private List<String> findMeasuresById(Long id, Deque<String> path) {
-        List<String> results = new ArrayList<>();
-
-        // get current category path from parent path
-        path = this.getCurrentPath(path);
-
-        // search the word in this category's measures
-        List<Measure> measures = this.getMeasures();
-        if (measures != null) {
-            for (Measure m : measures) {
-                if (m.getId() == id) {
-                    List<String> parts = new ArrayList<>(path);
-                    parts.add(m.getName());
-                    results.add(String.join("/", parts));
-                }
-            }
-        }
-
-        // search the word in child categories
-        List<Category> children = this.getCategories();
-        if (children != null) {
-            for (Category child : children) {
-                if (child == null) continue;
-                List<String> childResults = child.findMeasuresById(id, path);
-                if (childResults != null && !childResults.isEmpty()) {
-                    results.addAll(childResults);
-                }
-            }
-        }
-        
-        // backtrack to the parent path
-        path.removeLast();
-
-        return results;
+        return findMeasuresRecursive(Measure.idEquals(id));
     }
 
     /**
@@ -159,27 +92,23 @@ public class Category {
         if (type == null || type.isBlank()) {
             throw new IllegalArgumentException("Data type is not defined");
         }
-        DataType dt = DataType.fromString(type);
-        if (dt == null) {
-            throw new IllegalArgumentException("Unsupported data type: " + type);
-        }
-        return findMeasuresByType(dt, null);
+        return findMeasuresRecursive(Measure.typeEquals(type));
     }
 
     /**
-     * Searches recursively for measures whose type equals to the given type.
+     * Searches recursively for measures matching the given predicate.
      */
-    private List<String> findMeasuresByType(DataType type, Deque<String> path) {
+    private List<String> findMeasuresRecursive(Predicate<Measure> predicate) {
         List<String> results = new ArrayList<>();
 
-        // get current category path from parent path
-        path = this.getCurrentPath(path);
+        // Get the full path to this category
+        Deque<String> path = this.getPath();
 
-        // search the word in this category's measures
+        // Search in this category's measures
         List<Measure> measures = this.getMeasures();
         if (measures != null) {
             for (Measure m : measures) {
-                if (m.getDataType() == type) {
+                if (predicate.test(m)) {
                     List<String> parts = new ArrayList<>(path);
                     parts.add(m.getName());
                     results.add(String.join("/", parts));
@@ -187,35 +116,78 @@ public class Category {
             }
         }
 
-        // search the word in child categories
+        // Search in child categories
         List<Category> children = this.getCategories();
         if (children != null) {
             for (Category child : children) {
                 if (child == null) continue;
-                List<String> childResults = child.findMeasuresByType(type, path);
+                List<String> childResults = child.findMeasuresRecursive(predicate);
                 if (childResults != null && !childResults.isEmpty()) {
                     results.addAll(childResults);
                 }
             }
         }
-        
-        // backtrack to the parent path
-        path.removeLast();
 
         return results;
     }
 
     /**
-     * Gets the current category path from the parent path.
+     * Builds the full path from root to this category dynamically using parent references.
+     * @return Deque containing the path segments from root to this category
      */
-    private Deque<String> getCurrentPath(Deque<String> path) {
-        if (path == null) path = new LinkedList<>();
-        if (this.getName() != null && !this.getName().isBlank()) {
-            path.addLast(this.getName());
-        } else {
-            path.addLast("category-" + this.getId());
+    public Deque<String> getPath() {
+        Deque<String> path = new LinkedList<>();
+        Category current = this;
+        while (current != null) {
+            String segment = (current.getName() != null && !current.getName().isBlank()) 
+                ? current.getName() 
+                : "category-" + current.getId();
+            path.addFirst(segment);
+            current = current.getParent();
         }
         return path;
+    }
+
+    /**
+     * Custom deserializer for Category that sets parent references during deserialization.
+     */
+    public static class CategoryDeserializer extends JsonDeserializer<Category> {
+
+        @Override
+        public Category deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode node = p.getCodec().readTree(p);
+            ObjectMapper mapper = (ObjectMapper) p.getCodec();
+
+            Category category = new Category(
+                node.get("id").asLong(), 
+                node.get("name").asText()
+            );
+
+            // Deserialize measures
+            if (node.has("measures") && node.get("measures").isArray()) {
+                ArrayNode measuresNode = (ArrayNode) node.get("measures");
+                List<Measure> measures = new ArrayList<>();
+                for (JsonNode measureNode : measuresNode) {
+                    Measure measure = mapper.treeToValue(measureNode, Measure.class);
+                    measures.add(measure);
+                }
+                category.setMeasures(measures);
+            }
+
+            // Deserialize categories recursively
+            if (node.has("categories") && node.get("categories").isArray()) {
+                ArrayNode categoriesNode = (ArrayNode) node.get("categories");
+                List<Category> categories = new ArrayList<>();
+                for (JsonNode categoryNode : categoriesNode) {
+                    Category child = mapper.treeToValue(categoryNode, Category.class);
+                    child.setParent(category);
+                    categories.add(child);
+                }
+                category.setCategories(categories);
+            }
+
+            return category;
+        }
     }
 
 }
